@@ -1,0 +1,42 @@
+/* 
+    Document   : design
+    Created on : 4 sept. 2013, 20:07:01
+    Author     : MasGaNo
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    width:1000px;
+    margin:auto;
+}
+
+.fs_artist {
+    width:100%;
+}
+
+.albums {
+    border:1px dashed black;
+}
+
+.fs_albums {
+    width:96%;
+    margin:20px auto;
+    padding:1%;
+    border:1px outset blueviolet;
+}
+
+.tracks {
+    width:96%;
+    padding:1%;
+    margin:auto;
+    border:1px inset blue;
+    text-align: center;
+}
+
+.fs_tracks {
+    width:28%;
+    display: inline-block;
+    border:1px solid bisque;
+    margin:1%;
+}

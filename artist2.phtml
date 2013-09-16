@@ -1,0 +1,39 @@
+<section>
+    Nom artiste: {$artistName}
+    <br>
+    Pays: {$country}
+    <br>
+    Site: <a href="{$website}">{$website}</a>
+    <br>
+    Facebook: <a href="{$facebook}">{$facebook}</a>
+    {isset:$albums}
+    <section class="albums">
+        <h3>Albums</h3>
+        {array:$albums}
+        <div class="fs_albums">
+            <h4>{$title}</h4>
+            Ann&eacute;e: {$year}
+            <br>
+            {isset:$genre}Genre: {$genre}{/isset:$genre}
+            {empty:$genre}Pas de genre{/empty:$genre}
+            <br>
+            Total pistes: {count:$tracks}
+            {isset:$tracks}
+            <section class="tracks">
+            {array:$tracks}
+                <div class="fs_tracks">
+                    <div>{$title}</div>
+                    <div>{$duration}</div>
+                    <button>Play</button>
+                </div>
+            {/array:$tracks}
+            </section>
+            {/isset:$tracks}
+            {empty:$tracks}
+            <div>Pas de track... :(</div>
+            {/empty:$tracks}
+        </div>
+        {/array:$albums}
+    </section>
+    {/isset:$albums}
+</section>
