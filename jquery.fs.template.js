@@ -287,10 +287,10 @@
             return template;
         },
         variableReplace: function(template, args, options) {
-            template = template[0].outerHTML;
+            if (template instanceof Object) {
+                template = template[0].outerHTML;
+            }
             var variables = parseTemplateVariableReplace(template);
-            console.log(variables);
-            console.log(args);
             return applyTplVariableReplace(template, args, variables, options);
         }
     };
@@ -306,7 +306,24 @@
 
         return templateMode[options.template](clone, args, options);
     };
-    
+ 
+    $.fsTpl = function(template, args, config)
+    {
+        if (config === undefined) {
+            config = {};
+        }
+        
+        var options = mergeObject(mergeObject({}, defaultConfig), config);
+        var clone;
+        if (template instanceof Object) {
+            clone = template.clone();
+        } else {
+            clone = template.slice();
+        }
+
+        return templateMode[options.template](clone, args, options);
+    };
+
     var converters = $.fn.fsTpl.converters = $.fn.fsTpl.cvtr = {};
         
 })(jQuery);
