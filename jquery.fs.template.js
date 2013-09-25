@@ -1,10 +1,28 @@
+/*!
+ * Fantasite Template JavaScript Library v0.2.0
+ * https://github.com/MasGaNo/jqueryTemplate
+ *
+ * Dependency with jquery.js
+ * http://jquery.com/
+ *
+ * Date: 2013-09-25
+ */
 (function($)
 {
+	// Default config of fs.template
     var defaultConfig = {
+		// Prefix of class for DOM Template mode
         prefix: 'fs_',
-        template: 'normal'
+		// Template render mode. Default: dom
+        template: 'dom'
     };
     
+	/**
+	 *	Merge object to another object
+	 *	@param	Object	obj1	Object to merge to
+	 *	@param	Object	obj2	Object to merge from
+	 *	@return	Object	Return obj1
+	 */
     var mergeObject = function(obj1, obj2)
     {
         for (var i in obj2) {
@@ -12,49 +30,41 @@
         }
         return obj1;
     };
-    /*
-    var getTpl1 = function(element, options) {
-        var tplList = element.find("[class^='" + options.prefix + "'],[class*=' " + options.prefix + "']");
-        var currParent = null;
-        
-        tplList.each(function(index, item) {
-            //this == tplList ?
-            var that = tplList[index];
-            
-            var classList = item.attr('class').split(/\s+/);
-            var tplName;
-            $.each(classList, function(ind, className) {
-               
-                var lClassName = className.substr(0, options.prefix.length);
-                if (lClassName === options.prefix) {
-                    tplName = lClassName;
-                    return false;
-                } 
-            });
-            if (currParent === null) {
-                //checker parent en recursion inverse et ordonner les tpl en hierarchy a defaut du find first level
-            }
-        });
-    };
-    */
+	
+	/************************\
+	**	DOM Template mode	**
+	\************************/
+
+	/**
+	 *	Get class name of template element
+	 *	@param	DOMElement	element	DOMElement to check
+	 *	@param	Object		options	Options of template
+	 *	@return	string		Class name of FS Element template. null if not found.
+	 */
     var getClassName = function(element, options) {
         var lClass = $(element).attr('class');
         if (!lClass) {
             return null;
         }
-        var classList = lClass.split(/\s+/);
+        var classList = lClass.split(/\s+/);//Check each className
         var returnClass = null;
         $.each(classList, function(index, className) {
 
             var lClassName = className.substr(0, options.prefix.length);
             if (lClassName === options.prefix) {
                 returnClass = className;
-                return false;
+                return false;// "Break jQuery each
             } 
         });
         return returnClass;
     };
     
+	/**
+	 *	Parse template DOM
+	 *	@param	DOMElement	element	Template to parse
+	 *	@param	Object		options	Options	Options of template
+	 *	@return	Object		Collection of template object 
+	 */
     var getTpl2 = function(element, options, list) {
         if (list === undefined) {
             list = {};
@@ -80,7 +90,13 @@
         return list;
     }
     
-    var applyTpl2 = function(tplList, args, config) {
+	/**
+	 *	Apply values to template to generate HTML 
+	 *	@param	Object	tplList	Collection of template
+	 *	@param	Object	args	Values to apply to template
+	 *	@param	Object		options	Options	Options of template
+	 */
+    var applyTpl2 = function(tplList, args, options) {
         for (var i in tplList) {
             if (args[i] === undefined) {
                 tplList[i].tpl.remove();//Remove this child if unused
@@ -90,7 +106,7 @@
                     var lArg = lArgs[ind];
                     var lClone = tplList[i].tpl.clone();
                     tplList[i].tpl.after(lClone);//Insert after this element ?
-                    applyTpl2(getTpl2(lClone, config), lArg, config);
+                    applyTpl2(getTpl2(lClone, options), lArg, options);
                 }
                 tplList[i].tpl.remove();
             } else if (args[i] instanceof Object) {//converter if is object) {
@@ -109,6 +125,13 @@
         }
     };
     
+	/****************************\
+	**	End DOM Template mode	**
+	\****************************/
+
+	/************************************\
+	**	Variabke Replace Template mode	**
+	\************************************/
     
     var recureParseVariablesVariableReplace = function(matches) {
         var variables = {array:[], variables:{}};
@@ -280,8 +303,14 @@
         return template;
     };
     
+	
+	/****************************************\
+	**	End Variable Replace Template mode	**
+	\****************************************/
+
+	
     var templateMode = {
-        normal: function(template, args, options) {
+        dom: function(template, args, options) {
             var tplList = getTpl2(template, options);
             applyTpl2(tplList, args, options);
             return template;
@@ -297,14 +326,7 @@
     
     $.fn.fsTpl = function(args, config)
     {
-        if (config === undefined) {
-            config = {};
-        }
-        
-        var options = mergeObject(mergeObject({}, defaultConfig), config);
-        var clone = $(this).clone();
-
-        return templateMode[options.template](clone, args, options);
+		return $.fsTpl($(this), args, config);
     };
  
     $.fsTpl = function(template, args, config)
@@ -324,6 +346,6 @@
         return templateMode[options.template](clone, args, options);
     };
 
-    var converters = $.fn.fsTpl.converters = $.fn.fsTpl.cvtr = {};
+    var converters = $.fsTpl.converters = $.fn.fsTpl.cvtr = $.fn.fsTpl.converters = $.fn.fsTpl.cvtr = {};
         
 })(jQuery);
