@@ -1,11 +1,11 @@
 /*!
- * Fantasite Template JavaScript Library v0.2.0
+ * Fantasite Template JavaScript Library v0.2.1
  * https://github.com/MasGaNo/jqueryTemplate
  *
  * Dependency with jquery.js
  * http://jquery.com/
  *
- * Date: 2013-09-25
+ * Date: 2013-10-09
  */
 (function($)
 {
@@ -132,7 +132,11 @@
 	/************************************\
 	**	Variabke Replace Template mode	**
 	\************************************/
-    
+    /**
+	 *	Decode all variables of template and keep hierarchy between variable
+	 *	@param	Array	matches	List of variables
+	 *	@return	Object	Hierarchy of variable
+	 */
     var recureParseVariablesVariableReplace = function(matches) {
         var variables = {array:[], variables:{}};
         var currVariables = {};
@@ -152,6 +156,7 @@
                 if (parts.length !== 2 || parts[1].charAt(0) !== '$') {
                     continue;
                 }
+				/**	TODO: Refactoring with external "plugin" function add new Variable type **/
                 if (parts[0] === 'array') {
                     var searchEnd = '{/' + variable + '}';
                     var countRecursive = 0;//Check if pattern element is not in it-self
@@ -202,11 +207,25 @@
         }
         return variables;
     };
+	
+	/**
+	 *	Parse template on VariableReplace mode
+	 *	@param	String	template	Template to parse
+	 *	@return	Object	List of variables in the template
+	 */
     var parseTemplateVariableReplace = function(template) {
         var matches = template.match(/\{(.+?)\}/g);
         return recureParseVariablesVariableReplace(matches);
     };
     
+	/**
+	 *	Apply values to template to generate HTML
+	 *	@param	String	template	Template code
+	 *	@param	Object	args		Values to apply to template
+	 *	@param	Object	variables	List of template's variables
+	 *	@param	Object	options		Options	Options of template
+	 *	@return String	HTML generated
+	 */
     var applyTplVariableReplace = function(template, args, variables, options) {
         for (var i = 0; i < variables.array.length; ++i) {
             var variable = variables.array[i];
@@ -308,7 +327,11 @@
 	**	End Variable Replace Template mode	**
 	\****************************************/
 
-	
+	/**
+	 *	Entry point of method's list:
+	 *						- dom: Template based on DOM and Class variable (fast but only content replace)
+	 *						- variableReplace: Template based on {$variable} (heavy but flexible, full HTML replace)
+	 */
     var templateMode = {
         dom: function(template, args, options) {
             var tplList = getTpl2(template, options);
